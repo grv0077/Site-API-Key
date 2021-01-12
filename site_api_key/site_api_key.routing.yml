@@ -1,4 +1,4 @@
-site_api_key.page_jason:
+site_api_key.page_json:
   path: '/page_json/{siteapikey}/{node}'
   defaults:
     _controller: '\Drupal\site_api_key\Controller\SiteApiKeyController::pageJson'
