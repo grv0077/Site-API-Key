@@ -1,0 +1,56 @@
+<?php
+
+/**
+ * @file
+ * Implements required hooks.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_form_FORM_ID_alter.
+ * 
+ * Alter the site information form for saving saving Site Api key.
+ */
+function site_api_key_form_system_site_information_settings_alter(&$form, FormStateInterface $form_state, $form_id) {
+	
+  $systemConfigObject = \Drupal::configFactory()->getEditable('system.site');
+  
+  // Create field in Site Information Form
+  $form['site_information']['site_api_key'] = [
+    '#type' => 'textfield',
+    '#title' => t('Site API Key'),
+    '#default_value' => $systemConfigObject->get('siteapikey') ? $systemConfigObject->get('siteapikey') : 'No API Key yet',
+  ];
+  
+  // Change the action button label if confugration saved at least once.
+  if ($systemConfigObject->get('siteapikey')) {
+	$form['actions']['submit']['#value'] = t('Update Configuration');
+  }
+  
+  $form['#submit'][] = 'site_api_key_form_system_site_information_settings_submit';
+}
+
+/**
+ * Form submit handler for saving site api key.
+ * 
+ * @see site_api_key_form_system_site_information_settings_alter()
+ * 
+ * @param array $form
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ */
+function site_api_key_form_system_site_information_settings_submit(array $form, FormStateInterface $form_state) {
+	
+  $systemConfigObject = \Drupal::configFactory()->getEditable('system.site');
+  
+  $existingKey = $systemConfigObject->get('siteapikey');
+  $enteredSiteKey = trim($form_state->getValue('site_api_key'));
+  
+  // Check if siteKey entered and changed then only save to siteapikey configuration object.
+  if (($enteredSiteKey != 'No API Key yet') && ($existingKey != $enteredSiteKey)) {
+    $systemConfigObject->set('siteapikey', $enteredSiteKey);
+    $systemConfigObject->save();
+    drupal_set_message(t('Site Api Key set to %key', ['%key' => $enteredSiteKey]), 'status');
+  }
+  
+}

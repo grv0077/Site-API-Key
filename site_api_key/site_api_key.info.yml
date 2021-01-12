@@ -1,0 +1,5 @@
+name: Node JSON Builder
+description: Get Node data in JSON Format using Site API Key
+core: 8.x
+type: module
+package: Custom

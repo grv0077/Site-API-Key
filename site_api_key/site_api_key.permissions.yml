@@ -1,0 +1,3 @@
+site_api_key access page_json:
+  title: 'Access page_json'
+  description: 'Permission to access the page_json url'
